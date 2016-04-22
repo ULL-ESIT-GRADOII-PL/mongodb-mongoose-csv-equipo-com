@@ -1,10 +1,12 @@
+"use strict";
+
 var express = require('express')
 var csv = require('./csv');
 var app = express()
 // https://nodejs.org/api/path.html
 var path = require("path")
-
-
+var mongoose = require('mongoose');
+var database = require('./database.js');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,34 +39,33 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // is the route that express uses when we visit
 // our site initially.
 
-app.get('/', function(req, res) {
+database.iniciar();
 
-    res.render('layout', { title: 'CSV ajax'})
+app.get('/', (req, res)  => {
+    
+    database.getBotones(res);
+    
 });
 
 
-app.get('/calculate', function (req, res){
+app.get('/calculate', (req, res) =>{
       var answer = csv.calculate(req.query.csvString)
       res.send(answer);
 
 });
 
+app.get('/mongo/queryBoton', (req, res) =>{
+   database.queryBoton(req, res);
 
-
-// app.get('/', function(req, res){
-//   // The form's action is '/' and its method is 'POST',
-//   // so the `app.post('/', ...` route will receive the
-//   // result of our form
-//   res.sendfile(__dirname + '/public/index.html');
-// });
-
-// app.get('/tests', function(req, res){
-//   // The form's action is '/' and its method is 'POST',
-//   // so the `app.post('/', ...` route will receive the
-//   // result of our form
-//   res.sendfile(__dirname + '/public/test/index.html');
-// });
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at localhost:" + app.get('port'));
 });
 
+app.get('/mongo/save', (req, res) => {
+    
+    database.guardarEntrada(req, res);
+
+});
+
+
+app.listen(app.get('port'), () => {
+  console.log("Node app is running at localhost:" + app.get('port'));
+});

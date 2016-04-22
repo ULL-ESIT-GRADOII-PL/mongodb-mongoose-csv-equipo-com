@@ -12,12 +12,25 @@ body {
   color: white;
   font-family: Helvetica, sans-serif; }
 
-table {
-  width: 50%
-}
-
 table, th, td {
-  border: 1px solid black; }
+  border: 1px solid black;
+  padding: 0px;
+  border-spacing: 0px; }
+
+.filestyle {
+  background-color: #204070;
+  text-align: left;
+  padding: 5px; }
+
+.saveentry {
+  background-color: #407040;
+  text-align: center;
+  padding: 5px; }
+  .saveentry:hover {
+    background-color: #70BB70; }
+
+#buttonSave {
+  width: 200px; }
 
 #finaltable:hover td {
   background-color: green; }
@@ -30,10 +43,5 @@ tr:nth-child(even) {
 
 tr.error {
   background-color: red; }
-
-.filestyle {
-  background-color: navy;
-  text-align: left;
-}
 
 /*# sourceMappingURL=output.css.map */

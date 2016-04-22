@@ -16,13 +16,12 @@ const resultTemplate = `
 `;
 
     const ajaxRequest = (input)  => {
-        console.log(input);
         $.ajax({
            url: '/calculate',
            type: 'GET',
            cache: false,
            data: {csvString: input},
-           success: function(data){
+           success: function(data) {
                 var parsedTemplate = _.template(resultTemplate,{items: data });
                 $("#finaltable").html(parsedTemplate);
            }
@@ -30,6 +29,35 @@ const resultTemplate = `
                alert('text status '+textStatus+', err '+err)
            }
         })
+    }
+
+    const ajaxRequestBDGet = (idBoton)  => {
+            $.ajax({
+               url: '/mongo/queryBoton',
+               type: 'GET',
+               cache: false,
+               data: {botonId: idBoton},
+               success: function(data){
+                   $('#original').val(data);
+               }
+               , error: function(jqXHR, textStatus, err){
+                   alert('text status '+textStatus+', err '+err)
+               }
+            })
+        }
+    const ajaxRequestSave = (input)  => {
+        var nombr = prompt("Escribe un nombre");
+        $.ajax({
+           url: '/mongo/save',
+           type: 'GET',
+           data: {nombre: nombr , contenido: input.value},
+               success: function(data){
+                   $("#" + data + " span").text(nombr);
+               }
+               , error: function(jqXHR, textStatus, err){
+                   console.error('text status '+textStatus+', err '+err)
+               }
+        });
     }
 
     const dump = (fileName) => {
@@ -89,6 +117,8 @@ const resultTemplate = `
         var list=document.getElementById("list");
         list.insertBefore(ulnode,list.childNodes[2]);
   }
+  
+ 
 
     // const readSingleFile = (evt) => {
     //     //Recuperar el fichero (el primero, porque se podría una lista)
@@ -110,11 +140,21 @@ const resultTemplate = `
 
 
     $(document).ready(() => {
-        console.log(resultTemplate)
         if (window.localStorage && localStorage.original) {
             original.value = localStorage.original;
-        //  let inputFile =
+        }
+        
         $('#files').change(handleFileSelect);
+        $('#buttonSave').click(() => {
+            ajaxRequestSave(original);
+        })
+        
+        $('.botonQuery').click((event) => {
+            console.log(event.currentTarget)
+            ajaxRequestBDGet(event.currentTarget.id.toString());
+        })
+            
+            
         // document.getElementById('fileInput').addEventListener('change', readSingleFile, false);
         $('#button').click(() => {
             var original = document.getElementById("original").value;
@@ -126,7 +166,6 @@ const resultTemplate = `
         var dropZone = document.getElementById('drop_zone');
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', handleFileSelect, false);
-    }
     });
 
 })();
